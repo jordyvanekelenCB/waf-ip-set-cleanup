@@ -16,7 +16,8 @@ def lambda_handler(event, context):
     # Activate HTTP flood clean
     http_clean_results = HTTPFloodClean(config).clean_http_flood()
 
-    print_results(config, http_clean_results)
+    # Print the results
+    print_results(http_clean_results)
 
 
 def print_results(http_clean_results_obj):
