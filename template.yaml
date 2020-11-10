@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: WAF IP set cleanup
+
+Globals:
+  Function:
+    Timeout: 10
+
+Resources:
+  AccessLogTrigger:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./LambdaCode
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      Timeout: 10
+      Role: 'arn:aws:iam::937333453566:role/CloudFormationServiceRole'
+      Environment:
+        Variables:
+          REGION: eu-west-1
+      Events:
