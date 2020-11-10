@@ -7,7 +7,7 @@ Globals:
     Timeout: 10
 
 Resources:
-  AccessLogTrigger:
+  WAFIPSetCleanup:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./LambdaCode
