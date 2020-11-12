@@ -1,8 +1,16 @@
+""" Creates an AWS connection """
+
+# pylint: disable=E0401
 import boto3
 
 
 class AWSConnection:
+    """ This class is responsible for creating AWS connections """
 
-    def get_connection(self, aws_component):
+    def __str__(self):
+        return self.__class__.__name__
 
+    @staticmethod
+    def get_connection(aws_component):
+        """ Returns a boto3 client given a specified AWS component """
         return boto3.client(aws_component)

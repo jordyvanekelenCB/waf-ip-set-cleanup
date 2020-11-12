@@ -1,17 +1,19 @@
-import boto3
-import time
-import logging
+""" DynamoDB connection class """
 
-# Setup logger
-logger = logging.getLogger()
+import time
+
+# pylint: disable=E0401
+import boto3
 
 
 class DynamoDBConnection:
+    """ Handles all connections to DynamoDB """
 
     def __init__(self):
         self.dynamodb = boto3.resource('dynamodb')
 
-    def insert_block_list_queue_entry(self, ip, flood_level):
+    def insert_block_list_queue_entry(self, ip_address, flood_level):
+        """ Inserts entry in block-list queue """
 
         table_block_list_queue = self.dynamodb.Table('block_list_queue')
 
@@ -19,18 +21,19 @@ class DynamoDBConnection:
         timestamp_cur = int(time.time())
 
         # Generate uuid to conform to primary key restrictions
-        uuid = ip + '_' + str(timestamp_cur) + '_' + flood_level
+        uuid = ip_address + '_' + str(timestamp_cur) + '_' + flood_level
 
         # Insert item and get response
-        response = table_block_list_queue.put_item(Item={
+        table_block_list_queue.put_item(Item={
             'uuid': uuid,
-            'ip': ip,
+            'ip': ip_address,
             'flood_level': flood_level,
             'timestamp_start': timestamp_cur
         })
 
-
     def retrieve_block_list_queue(self):
+        """ Retrieves all entries from the block-list queue """
+
         table_block_list_queue = self.dynamodb.Table('block_list_queue')
 
         # Return all entries from database
@@ -38,11 +41,12 @@ class DynamoDBConnection:
 
         return block_list_entries
 
-
     def remove_items_block_list_queue(self, uuid_list_expired):
+        """ Removes an item from the block-list queue by a given list of uuid's """
+
         table_block_list_queue = self.dynamodb.Table('block_list_queue')
 
         for uuid in uuid_list_expired:
-            response = table_block_list_queue.delete_item(Key={
+            table_block_list_queue.delete_item(Key={
                 'uuid': uuid
             })
