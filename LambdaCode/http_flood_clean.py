@@ -1,7 +1,7 @@
 from connection.dynamodb_connection import DynamoDBConnection
 import logging
 import time
-from helper import AWSWAFv2
+from connection.aws_wafv2 import AWSWAFv2
 
 # Setup logger
 logger = logging.getLogger()
