@@ -39,7 +39,7 @@ def setup_config():
 # pylint: disable=W0621
 # pylint: disable=R0914
 def test_filter_block_list_queue(setup_config):
-    """ This method tests the filter_block_list_queue methodx """
+    """ This method tests the filter_block_list_queue method """
 
     # !ARRANGE!
     http_flood_clean = HTTPFloodClean(setup_config)
