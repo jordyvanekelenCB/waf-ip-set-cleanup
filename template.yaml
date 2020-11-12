@@ -13,7 +13,7 @@ Resources:
       CodeUri: ./LambdaCode
       Handler: app.lambda_handler
       Runtime: python3.8
-      Timeout: 10
+      Timeout: 900
       Role: 'arn:aws:iam::937333453566:role/CloudFormationServiceRole'
       Environment:
         Variables:
