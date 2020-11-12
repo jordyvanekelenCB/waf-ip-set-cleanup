@@ -1,9 +1,13 @@
+""" Unit test containing tests for HTTP Flood Clean class """
+
 import sys
 import os
 import inspect
-import pytest
 import configparser
 import time
+# pylint: disable=E0401
+import pytest
+
 
 # Fix module import form parent directory error.
 # Reference: https://stackoverflow.com/questions/55933630/
@@ -32,8 +36,10 @@ def setup_config():
 
     return config
 
-
+# pylint: disable=W0621
+# pylint: disable=R0914
 def test_filter_block_list_queue(setup_config):
+    """ This method tests the filter_block_list_queue method """
 
     # !ARRANGE!
     http_flood_clean = HTTPFloodClean(setup_config)
@@ -57,14 +63,23 @@ def test_filter_block_list_queue(setup_config):
     # Create UUID's
     block_list_item_low_expired_1111_uuid = '1.1.1.1_' + str(http_flood_low_expired) + '_flood_level_low'
     block_list_item_medium_expired_2222_uuid = '2.2.2.2_' + str(http_flood_medium_expired) + '_flood_level_medium'
-    block_list_item_critical_expired_3333_uuid = '1.1.1.1_' + str(http_flood_low_expired) + '_flood_level_low''3.3.3.3_' + str(http_flood_critical_expired)  + '_flood_level_critical'
-    block_list_item_critical_not_expired_1111_uuid = '1.1.1.1_' + str(http_flood_critical_not_expired)  + '_flood_level_critical'
+    block_list_item_critical_expired_3333_uuid = '3.3.3.3_' + str(http_flood_low_expired) + '_flood_level_critical'
+    block_list_item_critical_not_expired_1111_uuid = '1.1.1.1_' + str(http_flood_critical_not_expired)  \
+                                                     + '_flood_level_critical'
 
     # Create block list items
-    block_list_item_low_expired_1111 = { 'ip': '1.1.1.1', 'timestamp_start': http_flood_low_expired, 'uuid': block_list_item_low_expired_1111_uuid, 'flood_level': 'flood_level_low'}
-    block_list_item_medium_expired_2222 = { 'ip': '2.2.2.2', 'timestamp_start': http_flood_medium_expired, 'uuid': block_list_item_medium_expired_2222_uuid, 'flood_level': 'flood_level_medium'}
-    block_list_item_critical_expired_3333 = { 'ip': '3.3.3.3', 'timestamp_start': http_flood_critical_expired, 'uuid': block_list_item_critical_expired_3333_uuid, 'flood_level': 'flood_level_critical'}
-    block_list_item_critical_not_expired_1111 = { 'ip': '1.1.1.1', 'timestamp_start': http_flood_critical_not_expired, 'uuid': block_list_item_critical_not_expired_1111_uuid, 'flood_level': 'flood_level_critical'}
+    block_list_item_low_expired_1111 = {'ip': '1.1.1.1', 'timestamp_start': http_flood_low_expired,
+                                        'uuid': block_list_item_low_expired_1111_uuid,
+                                        'flood_level': 'flood_level_low'}
+    block_list_item_medium_expired_2222 = {'ip': '2.2.2.2', 'timestamp_start': http_flood_medium_expired,
+                                           'uuid': block_list_item_medium_expired_2222_uuid,
+                                           'flood_level': 'flood_level_medium'}
+    block_list_item_critical_expired_3333 = {'ip': '3.3.3.3', 'timestamp_start': http_flood_critical_expired,
+                                             'uuid': block_list_item_critical_expired_3333_uuid,
+                                             'flood_level': 'flood_level_critical'}
+    block_list_item_critical_not_expired_1111 = {'ip': '1.1.1.1', 'timestamp_start': http_flood_critical_not_expired,
+                                                 'uuid': block_list_item_critical_not_expired_1111_uuid,
+                                                 'flood_level': 'flood_level_critical'}
 
     # Add items to block list queue
     block_list_queue = {'Items': []}
