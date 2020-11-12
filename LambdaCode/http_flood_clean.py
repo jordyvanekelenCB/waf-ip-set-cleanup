@@ -1,25 +1,27 @@
-from connection.dynamodb_connection import DynamoDBConnection
-import logging
-import time
-from connection.aws_wafv2 import AWSWAFv2
+""" File containing HTTP Flood Clean class """
 
-# Setup logger
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+import time
+from connection.dynamodb_connection import DynamoDBConnection
+from connection.aws_wafv2 import AWSWAFv2
 
 
 class HTTPFloodClean:
+    """ This class is responsible for updating the block list queue and IP set block list """
 
     config_section_http_flood_clean = 'HTTP_FLOOD_CLEAN'
 
     def __init__(self, config):
         self.config = config
 
-        self.http_flood_low_level_timeout = int(self.config[self.config_section_http_flood_clean]['HTTP_FLOOD_LOW_LEVEL_TIMEOUT'])
-        self.http_flood_medium_level_timeout = int(self.config[self.config_section_http_flood_clean]['HTTP_FLOOD_MEDIUM_LEVEL_TIMEOUT'])
-        self.http_flood_critical_level_timeout = int(self.config[self.config_section_http_flood_clean]['HTTP_FLOOD_CRITICAL_LEVEL_TIMEOUT'])
+        self.http_flood_low_level_timeout = int(self.config[self.config_section_http_flood_clean]
+                                                ['HTTP_FLOOD_LOW_LEVEL_TIMEOUT'])
+        self.http_flood_medium_level_timeout = int(self.config[self.config_section_http_flood_clean]
+                                                   ['HTTP_FLOOD_MEDIUM_LEVEL_TIMEOUT'])
+        self.http_flood_critical_level_timeout = int(self.config[self.config_section_http_flood_clean]
+                                                     ['HTTP_FLOOD_CRITICAL_LEVEL_TIMEOUT'])
 
     def clean_http_flood(self):
+        """ Main function """
 
         block_list_queue = self.retrieve_blocklist_queue()
 
@@ -31,7 +33,9 @@ class HTTPFloodClean:
 
         return block_list_expired_obj
 
-    def retrieve_blocklist_queue(self):
+    @staticmethod
+    def retrieve_blocklist_queue():
+        """ Retrieve the block list queue from database """
 
         # Get block list entries to be removed
         block_list_queue = DynamoDBConnection().retrieve_block_list_queue()
@@ -39,6 +43,10 @@ class HTTPFloodClean:
         return block_list_queue
 
     def filter_block_list_queue(self, block_list_queue):
+        """ Filter the block list queue and return a dictionary with two lists. The first
+        list (block_list_queue_expired) is a list of items that need to be removed from the queue.
+        The second list (block_list_ip_set_expired) is a list of items that need to be removed
+        from the IP set block list"""
 
         block_list_queue_items = block_list_queue["Items"]
 
@@ -80,6 +88,7 @@ class HTTPFloodClean:
         return {'block_list_queue_expired': block_list_queue_expired, 'block_list_ip_set_expired': block_list_ip_set_expired}
 
     def remove_items_from_block_list(self, block_list_queue_expired, block_list_ip_set_expired):
+        """ Call database methods to remove items from block list queue and from block list expired """
 
         # Get IP set, then update IP Set
         aws_waf_v2_helper = AWSWAFv2(self.config)
