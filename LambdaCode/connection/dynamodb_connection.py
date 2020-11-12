@@ -44,9 +44,22 @@ class DynamoDBConnection:
     def remove_items_block_list_queue(self, uuid_list_expired):
         """ Removes an item from the block-list queue by a given list of uuid's """
 
-        table_block_list_queue = self.dynamodb.Table('block_list_queue')
+        uuid_list_expired_commands = []
 
         for uuid in uuid_list_expired:
-            table_block_list_queue.delete_item(Key={
-                'uuid': uuid
+            uuid_list_expired_commands.append({
+                'DeleteRequest' : {
+                    'Key' : {
+                        'uuid': uuid
+                    }
+                }
+            })
+
+        # Divide put_item_request_list into chunks of smaller list because bulk_insert limit is 25 per request:
+        uuid_list_expired_chunks = [uuid_list_expired_commands[x:x+25]
+                                    for x in range(0, len(uuid_list_expired_commands), 25)]
+
+        for uuid_list_expired_chunk in uuid_list_expired_chunks:
+            self.dynamodb.batch_write_item(RequestItems={
+                'block_list_queue': uuid_list_expired_chunk
             })
