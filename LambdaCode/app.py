@@ -15,7 +15,7 @@ CONFIG.read(os.path.join(os.path.dirname(__file__), 'config', 'config.ini'))
 
 
 # pylint: disable=W0613
-def lambda_handler(event, context):
+def lambda_handler(event, context) -> None:
     """ Entry point of the Lambda function """
 
     # Activate HTTP flood clean
@@ -25,15 +25,18 @@ def lambda_handler(event, context):
     print_results(http_clean_results)
 
 
-def print_results(http_clean_results_obj):
+def print_results(http_clean_results_obj) -> None:
     """ Prints results to screen """
 
     block_list_queue_expired = http_clean_results_obj['block_list_queue_expired']
     block_list_ip_set_expired = http_clean_results_obj['block_list_ip_set_expired']
 
+    # Dedupe into new list
+    block_list_ip_set_expired_deduped = list(set(block_list_ip_set_expired))
+
     LOGGER.info('================================ Http flood clean results ================================')
 
-    for ip_address in block_list_ip_set_expired:
+    for ip_address in block_list_ip_set_expired_deduped:
         # pylint: disable=W1202
         LOGGER.info("Finding: Removed client ip: {0} from IP Set".format(ip_address))
 

@@ -11,6 +11,6 @@ class AWSConnection:
         return self.__class__.__name__
 
     @staticmethod
-    def get_connection(aws_component):
+    def get_connection(aws_component) -> boto3.session:
         """ Returns a boto3 client given a specified AWS component """
         return boto3.client(aws_component)

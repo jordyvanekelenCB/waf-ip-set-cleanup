@@ -38,7 +38,7 @@ class HTTPFloodClean:
         """ Retrieve the block list queue from database """
 
         # Get block list entries to be removed
-        block_list_queue = DynamoDBConnection().retrieve_block_list_queue()
+        block_list_queue = DynamoDBConnection().get_from_queue()
 
         return block_list_queue
 
@@ -104,4 +104,4 @@ class HTTPFloodClean:
         aws_waf_v2_helper.update_ip_set(new_blocklist, locktoken)
 
         # Remove removed items from database queue
-        DynamoDBConnection().remove_items_block_list_queue(block_list_queue_expired)
+        DynamoDBConnection().remove_from_queue(block_list_queue_expired)

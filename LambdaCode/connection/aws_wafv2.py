@@ -23,7 +23,7 @@ class AWSWAFv2:
         self.ip_set_blocked_scope = self.config[self.config_section_waf]['IP_SET_BLOCKED_SCOPE']
         self.ip_set_blocked_identifier = self.config[self.config_section_waf]['IP_SET_BLOCKED_IDENTIFIER']
 
-    def retrieve_ip_set(self):
+    def retrieve_ip_set(self) -> str:
         """ Retrieves the IP set from AWS WAFv2 """
 
         # Get IP set
@@ -32,7 +32,7 @@ class AWSWAFv2:
 
         return response
 
-    def update_ip_set(self, new_block_list, locktoken):
+    def update_ip_set(self, new_block_list, locktoken) -> None:
         """ Updates the IP set with a new IP set (block list) """
 
         # Update current IP Set
