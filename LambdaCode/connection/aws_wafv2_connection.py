@@ -1,10 +1,9 @@
 """ AWS WAF v2 connection """
 
-import os
 from connection.aws_connection import AWSConnection
 
 
-class AWSWAFv2:
+class AWSWAFv2Connection:
     """ This class is responsible for handling connections to AWS WAF v2 """
 
     config_section_waf = 'AWS_WAF'
@@ -14,9 +13,6 @@ class AWSWAFv2:
 
         # Retrieve config parser
         self.config = config
-
-        # Read config file from relative path
-        self.config.read(os.path.join(os.path.dirname(__file__), 'config', 'config.ini'))
 
         # Setup instance attributes
         self.ip_set_blocked_name = self.config[self.config_section_waf]['IP_SET_BLOCKED_NAME']
