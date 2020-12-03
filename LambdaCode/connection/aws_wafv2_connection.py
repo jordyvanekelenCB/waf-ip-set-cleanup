@@ -1,7 +1,8 @@
 """ AWS WAF v2 connection """
 
+# pylint: disable=E0611
+# pylint: disable=E0401
 from connection.aws_connection import AWSConnection
-
 
 class AWSWAFv2Connection:
     """ This class is responsible for handling connections to AWS WAF v2 """
@@ -17,7 +18,22 @@ class AWSWAFv2Connection:
         # Setup instance attributes
         self.ip_set_blocked_name = self.config[self.config_section_waf]['IP_SET_BLOCKED_NAME']
         self.ip_set_blocked_scope = self.config[self.config_section_waf]['IP_SET_BLOCKED_SCOPE']
-        self.ip_set_blocked_identifier = self.config[self.config_section_waf]['IP_SET_BLOCKED_IDENTIFIER']
+        self.ip_set_blocked_identifier = self.retrieve_ip_set_identifier()
+
+    def retrieve_ip_set_identifier(self) -> str:
+        """ Get ip set identifier by calling wafv2.list_ip_sets because the resource ID has to be fetched manually after
+            creating the stack resource of the ip set.
+         """
+
+        ip_set_list = self.boto_wafv2_client.list_ip_sets(Scope=self.ip_set_blocked_scope)
+
+        ip_set_identifier = ''
+
+        for ip_set in ip_set_list["IPSets"]:
+            if ip_set["Name"] == self.ip_set_blocked_name:
+                ip_set_identifier = ip_set["Id"]
+
+        return ip_set_identifier
 
     def retrieve_ip_set(self) -> str:
         """ Retrieves the IP set from AWS WAFv2 """
